@@ -1,0 +1,485 @@
+/**
+  * This file belongs to the TakeALook project
+  *
+  * @see https://github.com/AnisB/Inertia
+  * @author 2012-2013 Anis Benyoub <benyoub.anis@gmail.com>
+  * @see The GNU Public License (GPL)
+  */
+
+/*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
+
+
+using namespace Inertia;
+template <class T>
+ ostream& operator<< (ostream& o, const T_Matrix<T>& m)
+ {
+	 return m.out(o);
+ }
+
+
+
+ template <class T>
+ istream& operator>> (istream&, T_Matrix<T>&);
+
+
+ template <class T>
+ T_Matrix<T>::T_Matrix(int nbRows,int nbColumns)
+ {
+     dimRows=nbRows;
+     dimColumns=nbColumns;
+
+     P= new T*[dimRows];
+     for(int i=0;i<dimRows;i++)
+     {
+    	 (*P)=new T[dimColumns];
+     }
+     Reinitiate();
+ }
+ //---------------------------------------------------------------------------
+
+ template <class T>
+ T_Matrix<T>::T_Matrix(int aDimension)
+ {
+     dimRows=aDimension;
+     dimColumns=aDimension;
+
+     P= new T*[dimRows];
+	 for(int i=0;i<dimRows;i++)
+	 {
+		 P[i]=new T[dimColumns];
+	 }
+     Reinitiate();
+ }
+ //---------------------------------------------------------------------------
+
+ template <class T>
+ T_Matrix<T>::T_Matrix(const T_Matrix<T>& m)
+ {
+     dimRows=m.dimRows;
+     dimColumns=m.dimColumns;
+     P=m.P;
+ }
+ //---------------------------------------------------------------------------
+
+ template <class T>
+ T_Matrix<T>::~T_Matrix()
+ {
+ }
+ //---------------------------------------------------------------------------
+
+ template <class T>
+ void T_Matrix<T>::Free()
+ {
+
+
+     for (int i=0; i<dimRows; i++)
+     {
+         delete [] P[i];
+     }
+     delete[] P;
+ }
+ //---------------------------------------------------------------------------
+
+ template <class T>
+ void T_Matrix<T>::Reinitiate()
+ {
+     for (int i=0; i<dimRows; i++)
+     {
+         for (int j=0; j<dimColumns; j++)
+         {
+             P[i][j]=0;
+         }
+     }
+ }
+ //---------------------------------------------------------------------------
+
+ template <class T>
+ void T_Matrix<T>::Resize(int newRows,int newColumns)
+ {
+     T_Matrix<T> m(newRows,newColumns);
+     if (dimRows*dimColumns <= newRows*newColumns)
+     {
+         for (int i=0; i<dimRows;i++)
+         {
+             for (int j=0; j<dimColumns; j++)
+             {
+                 m.P[i][j]=P[i][j];
+             }
+         }
+
+
+         for (int i2=dimRows; i2<newRows; i2++)
+         {
+             for (int j2=dimColumns; j2<newColumns; j2++)
+             {
+                 m.P[i2][j2]=0;
+             }
+         }
+     }
+     else
+     {
+         for (int i=0; i<newRows;i++)
+         {
+             for (int j=0; j<newColumns; j++)
+             {
+                 m.P[i][j]=P[i][j];
+             }
+         }
+     }
+     *this=m;
+ }
+ //---------------------------------------------------------------------------
+
+ template <class T>
+ void T_Matrix<T>::Resize(int newDimension)
+ {
+     T_Matrix<T> m(newDimension);
+     if (dimRows*dimColumns <= newDimension*newDimension)
+     {
+         for (int i=0; i<dimRows;i++)
+             for (int j=0; j<dimColumns; j++)
+                 m.P[i][j]=P[i][j];
+         for (int i2=dimRows; i2<newDimension; i2++)
+             for (int j2=dimColumns; j2<newDimension; j2++)
+                 m.P[i2][j2]=0;
+     }
+     else
+     {
+         for (int i=0; i<newDimension;i++)
+             for (int j=0; j<newDimension; j++)
+                 m.P[i][j]=P[i][j];
+     }
+     *this=m;
+ }
+ //---------------------------------------------------------------------------
+
+ template <class T>
+ void T_Matrix<T>::in(T *data)
+ {
+     for (int i=0; i<dimRows;i++)
+         for (int j=0; j<dimColumns; j++)
+             P[i][j]=data[dimColumns*i+j];
+ }
+ //---------------------------------------------------------------------------
+
+ template <class T>
+ ostream& T_Matrix<T>::out(ostream& o) const
+ {
+     for (int i=0; i<dimRows; i++)
+     {
+         for (int j=0; j<dimColumns; j++)
+             o <<P[i][j]<<" ";
+         o <<endl;
+     }
+     return o;
+ }
+ //---------------------------------------------------------------------------
+
+ template <class T>
+ T_Matrix<T>& T_Matrix<T>::operator=(const T_Matrix<T>& m)
+ {
+     dimRows=m.dimRows;
+     dimColumns=m.dimColumns;
+     P=m.P;
+     return *this;
+ }
+ //---------------------------------------------------------------------------
+
+ template <class T>
+ T_Matrix<T> T_Matrix<T>::operator-()
+ {
+     T_Matrix<T> r(dimRows,dimColumns);
+     r=*this * T(-1);
+     return r;
+ }
+ //---------------------------------------------------------------------------
+
+ template <class T>
+ T_Matrix<T> T_Matrix<T>::operator+(const T_Matrix<T>& m)
+ {
+     T_Matrix<T> r(dimRows,dimColumns);
+     for (int i=0; i<dimRows; i++)
+     {
+
+         for (int j=0; j<dimColumns; j++)
+         {
+        	 r.P[i][j]=P[i][j]+m.P[i][j];
+         }
+     }
+     return r;
+ }
+ //---------------------------------------------------------------------------
+
+ template <class T>
+ T_Matrix<T> T_Matrix<T>::operator-(const T_Matrix<T>& m)
+ {
+     T_Matrix<T> r(dimRows,dimColumns);
+     for (int i=0; i<dimRows; i++)
+     {
+    	 for (int j=0; j<dimColumns; j++)
+    	 {
+              r.P[i][j]=P[i][j]-m.P[i][j];
+    	 }
+     }
+     return r;
+ }
+ //---------------------------------------------------------------------------
+
+ template <class T>
+ T_Matrix<T> T_Matrix<T>::operator*(const T_Matrix<T>& m)
+ {
+     T_Matrix<T> r(dimRows,m.dimColumns);
+     r=this->mul(m);
+     return r;
+ }
+ //---------------------------------------------------------------------------
+
+template <class T>
+Vector3 T_Matrix<T>::operator *(const Vector3 &V)
+ {
+	Vector3 Result;
+	if(dimColumns==3)
+	{
+		Result.x = P[0][0]*V.x+P[0][1]*V.y+P[0][2]*V.z;
+		Result.y = P[1][0]*V.x+P[1][1]*V.y+P[1][2]*V.z;
+		Result.z = P[2][0]*V.x+P[2][1]*V.y+P[2][2]*V.z;
+	}
+	if(dimColumns==4)
+	{
+		Result.x = P[0][0]*V.x+P[0][1]*V.y+P[0][2]*V.z+P[0][3];
+		Result.y = P[1][0]*V.x+P[1][1]*V.y+P[1][2]*V.z+P[1][3];
+		Result.z = P[2][0]*V.x+P[2][1]*V.y+P[2][2]*V.z+P[2][3];
+	}
+
+	return Result;
+ }
+ //---------------------------------------------------------------------------
+
+ template <class T>
+ T_Matrix<T> T_Matrix<T>::operator*(const T f)
+ {
+     for (int i=0; i<dimRows; i++)
+     {
+         for (int j=0; j<dimColumns; j++)
+         {
+             P[i][j]*=f;
+         }
+     }
+     return *this;
+ }
+ //---------------------------------------------------------------------------
+
+ template <class T>
+ T_Matrix<T> T_Matrix<T>::operator*=(const T f)
+ {
+     *this=*this*f;
+     return *this;
+ }
+ //---------------------------------------------------------------------------
+
+ template <class T>
+ T_Matrix<T> T_Matrix<T>::mul(const T_Matrix<T>& m)
+ {
+     T_Matrix<T> r(dimRows,m.dimColumns);
+     T e=0;
+     for (int i=0; i<dimRows; i++)
+         for (int j=0; j<m.dimColumns; j++)
+         {
+             for (int k=0; k<dimColumns; k++)
+                 e+=P[i][k]*m.P[k][j];
+             r.P[i][j]=e;
+             e=0;
+         }
+     return r;
+ }
+ //---------------------------------------------------------------------------
+
+ template <class T>
+ void T_Matrix<T>::Reverse()
+ {
+     T_Matrix<T> r(dimRows,dimColumns);
+     r=Cofactor();
+     r.Transpose();
+     for (int i=0; i<dimRows; i++)
+     {
+         for (int j=0; j<dimRows; j++)
+         {
+        	 r.P[i][j]=r.P[i][j]*powf(-1,i+j+2);
+		 }
+     }
+
+     r*=T(1)/Determinant();
+     *this=r;
+ }
+ //---------------------------------------------------------------------------
+
+ template <class T>
+ void T_Matrix<T>::CofactorAndTranspose()
+ {
+     T_Matrix<T> r(dimRows,dimColumns);
+     r=Cofactor();
+     r.Transpose();
+     for (int i=0; i<dimRows; i++)
+     {
+         for (int j=0; j<dimRows; j++)
+         {
+             r.P[i][j]=r.P[i][j]*pow(-1,i+j+2);
+         }
+     }
+     *this=r;
+ }
+ //---------------------------------------------------------------------------
+
+ template <class T>
+ void T_Matrix<T>::Transpose()
+ {
+     T_Matrix<T> m(dimColumns,dimRows);
+     for (int i=0; i<dimRows; i++)
+     {
+         for (int j=0; j<dimColumns; j++)
+
+         {
+        	 m.P[i][j]=P[j][i];
+         }
+     }
+     *this=m;
+ }
+ //---------------------------------------------------------------------------
+
+ template <class T>
+ T T_Matrix<T>::Determinant3x3()
+ {
+     return P[0][0] * ( (P[1][1]*P[2][2])-(P[1][2]*P[2][1]) )
+            - P[1][0] * ( (P[0][1]*P[2][2])-(P[0][2]*P[2][1]) )
+            + P[2][0] * ( (P[0][1]*P[1][2])-(P[0][2]*P[1][1]) );
+ }
+ //---------------------------------------------------------------------------
+
+ template <class T>
+ T T_Matrix<T>::Determinant2x2()
+ {
+     return P[0][0]*P[1][1] - P[0][1]*P[1][0];
+ }
+ //---------------------------------------------------------------------------
+
+ template <class T>
+ T T_Matrix<T>::Determinant()
+ {
+     if (dimRows==2)
+	 {
+		 return Determinant2x2();
+	 }
+     if (dimRows==3)
+	 {
+    	 return Determinant3x3();
+	 }
+     T d=0;
+     for (int i=0; i<dimRows; i++)
+     {
+         d+=P[i][0] * Cofactor(i,0);
+     }
+     return d;
+ }
+ //---------------------------------------------------------------------------
+
+ template <class T>
+ T T_Matrix<T>::Cofactor(int ir, int ic)
+ {
+     return minor(ir,ic) * powf(-1, ir+ic+2);
+ }
+ //---------------------------------------------------------------------------
+
+ template <class T>
+ T T_Matrix<T>::minor(int ir, int ic)
+ {
+     T_Matrix<T> m4m(dimRows-1);
+     m4m=matrix4minor(ir,ic);
+     return m4m.determinant();
+ }
+ //---------------------------------------------------------------------------
+
+ template <class T>
+ T_Matrix<T> T_Matrix<T>::Cofactor()
+ {
+     T_Matrix<T> r(dimRows);
+     for (int i=0; i<dimRows; i++)
+     {
+         for (int j=0; j<dimRows; j++)
+         {
+             r.P[i][j]=Cofactor(i,j);
+         }
+     }
+     return r;
+ }
+ //---------------------------------------------------------------------------
+
+ template <class T>
+ T_Matrix<T> T_Matrix<T>::matrix4minor(int ir, int ic)
+ {
+     int indexR=0;
+     int indexC=0;
+     T_Matrix<T> r(dimRows-1);
+     for (int i=0; i<dimRows; i++)
+         for (int j=0; j<dimRows; j++)
+         {
+             if (i!=ir && j!=ic)
+             {
+                 r.P[indexR][indexC]=P[i][j];
+                 indexC++;
+             }
+             if (indexC==r.dimRows)
+             {
+                 indexC=0;
+                 indexR++;
+             }
+             if (indexR==r.dimRows)
+                 return r;
+         }
+     return r;
+ }
+ //---------------------------------------------------------------------------
+
+ template <class T>
+ istream& operator>> (istream& in, T_Matrix<T> &m)
+ {
+     int rw,cl;
+     cout << "DIM ROW: ";
+     in >> rw;
+     cout << "DIM COL: ";
+     in >> cl;
+
+
+     m.resize(rw,cl);
+     T *data=new T[rw*cl];
+     T element;
+     for (int i=0; i<rw; i++)
+         for (int j=0; j<cl; j++)
+         {
+             cout << i <<','<<j<<':';
+             in >> element;
+             data[cl*i+j]=element;
+         }
+      for (int x=0; x<rw; x++)
+      {
+         for (int y=0; y<cl; y++)
+         {
+             m.P[x][y]=data[cl*x+y];
+         }
+      }
+     delete [] data;
+     return in;
+ }

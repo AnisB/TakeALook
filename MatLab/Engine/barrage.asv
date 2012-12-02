@@ -1,0 +1,26 @@
+function [ Matrice ] = barrage( Matrice )
+
+
+for i=1:size(Matrice,1)
+   maxVal=0;
+    if((Matrice(i,3)>= Matrice(i,6)) && Matrice(i,3)>= Matrice(i,9))
+        maxVal=1;
+    end
+    if((Matrice(i,3)>= Matrice(i,3)) && Matrice(i,9)>= Matrice(i,6))
+        maxVal=9;
+    end
+    if((Matrice(i,6)>= Matrice(i,1)) && Matrice(i,6)>= Matrice(i,9))
+        maxVal=6;
+    end
+    
+    if (Matrice(i,maxVal)<590)
+        Matrice(i,3)=595;
+        Matrice(i,6)=595;
+        Matrice(i,9)=595;
+    end
+    
+end
+
+
+end
+

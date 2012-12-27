@@ -1,0 +1,11 @@
+function [ Q ] = bords( P,nombreTri )
+
+Q=zeros(nombreTri,size(P,2));
+for i=1:nombreTri
+      Q(i,:)=[P(m,1) P(m,2) P(m,3) P(m,1) P(m,2)-100 P(m,3) P(m,1)+3 P(m,2)-100 P(m,3) P(m,10) P(m,11) P(m,12) -3 0 0];
+       Q(i+1,:)=[P(m,1)+3 P(m,2) P(m,3) P(m,1) P(m,2)-100 P(m,3) P(m,1)+3 P(m,2)-100 P(m,3) P(m,10) P(m,11) P(m,12) -3 0 0];  
+        
+end
+
+end
+

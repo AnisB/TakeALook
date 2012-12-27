@@ -1,0 +1,20 @@
+function [ P ] = lumiere( P,source )
+
+nbTri=size(P,1);
+for i=1:nbTri
+    V=P(i,10:12);
+    Dist=V-source;
+    N=norm(Dist);
+    N=abs(N);
+    N=N/30;
+    if(N<1)
+        P(i,14)=0;
+    else
+    P(i,14)=( 1/N);
+    
+    end
+end
+
+
+end
+

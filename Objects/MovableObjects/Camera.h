@@ -30,8 +30,25 @@
 
 class Camera : public MovableObject {
 public:
-	Camera();
+	Camera(Vector3 aPosition, Vector3 aDirection);
 	virtual ~Camera();
+	void fd();
+	void bd();
+	void ld();
+	void rd();
+	void u();
+	void d();
+	void show();
+	Vector3 & getPosition() { return mPosition;}
+	Vector3 & getDirection() {return mDirection;}
+	Vector3 & getUpVector() {return mUpVector;}
+	double focalDistance ;
+	void motion(int x, int y);
+protected:
+	Vector3 mPosition;
+	Vector3 mDirection;
+	Vector3 mUpVector;
+
 };
 
 #endif /* CAMERA_H_ */

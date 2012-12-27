@@ -32,10 +32,11 @@
 #include <iostream>
 #include <math.h>
 #include "Vector3.h"
+#include "Vector4.h"
 
 
 
-namespace Inertia
+namespace TakeALook
 {
 using namespace std;
 
@@ -66,6 +67,7 @@ template <class T> class T_Matrix
 
        //------------------------------------------------ Autres méthodes
 
+       void setIdentity();
        // Remise à zero
        void Reinitiate();
 
@@ -129,6 +131,9 @@ template <class T> class T_Matrix
 
        //Surcharge du produit Matrice/Vecteur
 	   Vector3	  operator*(const Vector3&);
+
+       //Surcharge du produit Matrice/Vecteur
+	   Vector4	  operator*(const Vector4&);
 
        //Surcharge du produit scalaire Matrice/scalaire
        T_Matrix<T> operator*(const T);

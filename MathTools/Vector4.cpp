@@ -29,13 +29,19 @@
 
 
 using namespace std;
-using namespace Inertia;
-
+using namespace TakeALook;
 
 const double NILLTHRESHOLD=0.0001f;
 Vector4::Vector4 ( ):x(0),y(0),z(0),w(0)
 {
 	// std::cout<<"Appel du constructeur par defaut"<<std::endl;
+}
+Vector4::Vector4 (const Vector4 & OtherVector )
+{
+	x=OtherVector.x;
+	y=OtherVector.y;
+	z=OtherVector.z;
+	w=OtherVector.w;
 }
 Vector4::Vector4 ( double anX,double anY,double aZ,double aW):x(anX),y(anY),z(aZ),w(aW)
 {
@@ -46,7 +52,7 @@ Vector4::~Vector4 ( )
 	// std::cout<<"Appel du destructeur"<<std::endl;
 }
 
-void Vector4::debugDisplay()
+void Vector4::debugDisplay() const
 {
 	cout<<"Vector4("<<x<<", "<<y<<", "<<z<<", "<<w<<")."<<endl;
 }
@@ -135,6 +141,20 @@ bool operator==(const Vector4& A, const Vector4& B)
 	}
 	return false;
 }
+
+
+// L'egalite
+//Surcharge de =
+void Vector4::operator=(const Vector4& B)
+{
+	x = B.x;
+
+	y = B.y;
+
+	z = B.z;
+
+	w = B.w;
+}
 //Surcharge de !=
 bool operator!=(const Vector4& A, const Vector4& B)
 {
@@ -215,7 +235,7 @@ void Vector4::Set(double aX, double aY, double aZ, double aW)
 	x=aX;
 	y=aY;
 	z=aZ;
-	z=aW;
+	w=aW;
 }
 
 // Recuperation des valeurs

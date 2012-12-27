@@ -25,10 +25,28 @@
 #ifndef MAP_H_
 #define MAP_H_
 
+#include "../../MathTools/Matrix.h"
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include "../../Types.h"
+
 class Map {
 public:
-	Map();
+	Map(std::string aFile);
 	virtual ~Map();
+	void rafiner();
+	T_Matrix<double> * getMap(){ return mInitialMap ;}
+	TALColor getColor(int h);
+	double scale;
+protected :
+	void parseMyFile();
+
+protected :
+
+	std::string mFile;
+	T_Matrix<double> * mInitialMap;
+	std::map<HRange, TALColor > colorMap;
 };
 
 #endif /* MAP_H_ */

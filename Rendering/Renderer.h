@@ -30,17 +30,61 @@
 #include <list>
 #include "../Objects/MovableObjects/Light.h"
 #include "../Objects/MovableObjects/Camera.h"
+#include "../Objects/StaticObjects/Tree.h"
+#include "../Objects/StaticObjects/Map.h"
+#include "../Types.h"
 #include <string>
+#include "SDL/SDL.h"
+#include "../MathTools/Vector3.h"
+#include "../MathTools/Vector4.h"
+
 class Renderer {
 public:
 	Renderer();
 	virtual ~Renderer();
 	void loadMap(std::string aFile );
+	void setCamera(Vector3 aPosition, Vector3 aDirection);
+	void addLight(Vector3 aPosition);
+	void render();
+
+protected:
+	T_Matrix<double> baryCentre(T_Matrix<double> machin, Vector3 pos);
+	T_Matrix<double> perspective(T_Matrix<double> machin, double focale);
+	void generateTriangles();
+	void display();
+	void refresh();
+	void drawLine(SDL_Surface * ecran,double x1,double y1, double x2, double y2,double color);
+	void drawTriangle(SDL_Surface * aScreen,
+						int x1, int y1,
+						int x2, int y2,
+						int x3, int y3,
+						double r, double g,
+						double b, double a);
+
+	void drawPolygon(SDL_Surface * aScreen,
+			const int * x, const int * y,
+			int aSize, Uint8 r, Uint8 g, Uint8 b, Uint8 a);
+	int _filledRectAlpha(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint32 color, Uint8 alpha);
+	int filledRectAlpha(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint32 color);
+	int _HLineAlpha(SDL_Surface * dst, Sint16 x1, Sint16 x2, Sint16 y, Uint32 color);
+	int hlineColor(SDL_Surface * dst, Sint16 x1, Sint16 x2, Sint16 y, Uint32 color);
+	int drawPolygonColorMT(SDL_Surface * dst, const int * vx, const int * vy, int n, Uint32 color, int **polyInts, int *polyAllocated);
+
+
+
 
 protected :
 	std::list<Light *> mLights;
-	std::list<Camera *> mCameras;
-
+	Map * myMap ;
+	Camera * mCamera;
+	std::list<Tree *> mTrees;
+	bool mIsRendering;
+	SDL_Event mEvent;
+	SDL_Surface *mEcran ;
+	std::list<Triangle> mTriangles;
+	std::list<Line> mLines;
+	int *mPrimitivesPolyIntsGlobal;
+	int mPrimitivesPolyAllocatedGlobal;
 };
 
 #endif /* RENDERER_H_ */

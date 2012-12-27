@@ -28,7 +28,7 @@
 
 
 
-namespace Inertia
+namespace TakeALook
 {
 class Vector4
 {
@@ -50,7 +50,7 @@ public:
 	virtual ~Vector4 ( );
 
 //--------------------------------------------- AffichageDeDebug
-	void debugDisplay();
+	void debugDisplay() const;
 
 
 // ---------------------------------------------------------------
@@ -121,6 +121,8 @@ public:
 	double GetY();
 	double GetZ();
 	double GetW();
+	void operator=(const Vector4& B);
 };
 }
+
 #endif /* Vector4_H_ */
